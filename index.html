@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html ng-app="iVenues">
+  <head>
+    <meta charset="UTF-8">
+    <title>i-Venues</title>
+    <link rel="shortcut icon" href="images/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-google-maps/2.1.1/angular-google-maps.min.js"></script>
+
+
+    <script src='https://maps.googleapis.com/maps/api/js?sensor=false'></script>
+
+
+    <script type="text/javascript" src="libs/ui-bootstrap-tpls-0.13.0.min.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/animate.css">
+
+  </head>
+
+
+
+  <body>
+
+
+
+
+
+    <div class="container-full">
+
+
+    <!--  Store Header  -->
+      <div class="row test " >
+          <div class="col-md-5 col-md-offset-3 ">
+            <a href="">
+            <h4 class="title animated  bounceInLeft" >i-<span class="glyphicon glyphicon-map-marker" style="color:red;" ></span>enues</h4></a>
+          </div>
+          <a href="http://venues.herokuapp.com/" target="_blank" class="col-md-4 hidden-xs hidden-sm"><div><img class="animated  bounceInRight" ng-src="images/mappin.png"style=" margin:10px; height:40px;"></div>
+          </a>
+      </div>
+
+      <div id ="tasks_id" class="row my_row" ng-controller="MainController as mainCtrl">
+
+
+        <div class="row start_screen" ng-show="mainCtrl.startS" >
+          <div class="col-md-8 col-md-offset-2 centered wrapper">
+            <p class="text-center  white_p_big animated  bounceInDown">Welcome to I-Venues</p>
+            <p class="text-left  white_p animated  bounceInDown"><span class="glyphicon glyphicon-ok"></span> There are 4 tasks that I need you to complete and they are relatively simple. You will <b>search</b> for things that you like to drink and eat in the location you want and then you will have to <b>rank</b> 4 lists.</p>
+            <p class="text-left  white_p animated  bounceInDown"><span class="glyphicon glyphicon-ok"></span> <b>Each list</b> will suggest 5 places that fit your search criteria. Based on your taste and knowledge you should position 1st the list you like the most, 2nd the second favorite, etc .</p>
+            <p class="text-left  white_p animated  bounceInDown"><span class="glyphicon glyphicon-ok"></span> In the map you can use the Locate Me button to locate you. Also, you can drag and drop the circle in the location you want to search.</p>
+
+            <label id ="submitC" class="btn btn-success btn-lg animated  bounceInUp "  ng-click="mainCtrl.changeStart()">Click to Start!</label>
+
+
+          </div>
+        </div>
+
+        <div class="row start_screen" ng-show="mainCtrl.endS" >
+          <div class="col-md-8 col-md-offset-2 centered wrapper">
+            <p class="text-center  white_p_big animated  bounceInDown">Thats it!!! <b>Thank you</b> for taking part in my evaluation!!</p>
+
+
+          </div>
+        </div>
+
+
+
+
+
+        <div class="col-md-7 menu ">
+
+          <!--
+          <div  class="row_ed new hidden-md hidden-lg" ng-controller="mapController">
+            <div class="map_button">
+            <div id = "map_but" class="btn btn-info " ng-click="mapCtrl.locate()">
+              <span class="glyphicon glyphicon-map-marker"></span> Locate Me!
+
+              </div>
+          </div>
+          <ui-gmap-google-map center='map.center'zoom='map.zoom'  options="options" >
+            <ui-gmap-circle ng-repeat="c in circles track by c.id" center="c.center" stroke="c.stroke" fill="c.fill" radius="c.radius" visible="c.visible" geodesic="c.geodesic" editable="c.editable" draggable="c.draggable" clickable="c.clickable" control="c.control"  events='c.events'></ui-gmap-circle>
+
+          </ui-gmap-google-map>
+         </div>
+
+
+          <!--  Help paragraph  -->
+          <div class="row row_ed" >
+          <p  id="tasksB"class=" col-md-3 text-center help_task animated  tada" ng-hide="mainCtrl.startS">Task: {{data.tasks.task}}/4</p>
+
+          <p class=" col-md-9 text-center help ">{{data.tasks.name}}</p>
+          </div>
+
+
+
+          <!--  Search paragraph  -->
+          <div class="row row_ed ">
+          <div class="col-md-6 col-md-offset-3" >
+            <div class="input-group add-on">
+              <input type="search" class="form-control "  ng-model="query" ng-keyup="$event.keyCode == 13 && mainCtrl.setQuery(query)" placeholder="{{data.tasks.search}}">
+              <div class="input-group-btn">
+                <button class="btn btn-default" type="submit" ng-click="mainCtrl.setQuery(query)"><i class="glyphicon glyphicon-search"></i></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+          <!--  Distance paragraph  -->
+          <div class="row_ed centered">
+            <p class="text-center  help_sm">Use these buttons to determine how far you want to search for venues.</p>
+            <p class="text-center help_sub ">(You can move the circle in the map to change location.)</p>
+
+            <div class="btn-group ">
+              <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Left'" ng-click="mainCtrl.setRadius(800)">5' on foot</label>
+              <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Middle'" ng-click="mainCtrl.setRadius(1200)">10' on foot</label>
+              <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Right'" ng-click="mainCtrl.setRadius(2400)">20' on foot</label>
+              <label class="btn btn-primary" ng-model="radioModel" btn-radio="'Right2'" ng-click="mainCtrl.setRadius(5000)">5km away</label>
+            </div>
+          </div>
+
+
+
+          <!--  Lists paragraph  -->
+
+          <div class="row row_ed">
+            <div class="centered "><img id="load" class="animated  bounceInLeft" ng-show="data.load"ng-src="images/load.gif" style=" margin:10px; height:20px;"></div>
+
+            <p class="text-center help_sm ">Rank the lists based on your taste. Position first the one that you like the most and follow with the rest.</p>
+
+
+
+
+          <lists items="items"/>
+
+          </div>
+
+
+
+          <div class="row row_ed_large centered" style="bottom:0px;" >
+            <div class="col-md-12 ">
+
+
+              <label id="submitB"class="btn btn-success btn-lg " ng-disabled="data.test" ng-click="mainCtrl.gotoTask();mainCtrl.changeEnd(); data.nextTask() ; query=''">{{data.tasks.sub}}</label>
+
+              <p class="text-center help_sub " ng-show="data.test">(You should position all the lists in order to proceed)</p>
+
+	           </div>
+	        </div>
+
+
+          <div class="row row_ed centered"  >
+            <div class="col-md-12 ">
+
+		          <p>Copyright &copy; 2015 Ioannis Georgoulas</p>
+
+	           </div>
+	        </div>
+
+
+        </div>
+
+
+        <div class="col-md-5 hidden-xs hidden-sm map panel" >
+          <div id="map_canvas" ng-controller="mapController as mapCtrl">
+            <div class="map_button">
+            <div id = "map_but" class="btn btn-info " ng-click="mapCtrl.locate()">
+              <span class="glyphicon glyphicon-map-marker"></span> Locate Me!
+
+              </div>
+          </div>
+          <ui-gmap-google-map center='map.center'zoom='map.zoom'  options="options" >
+            <ui-gmap-circle ng-repeat="c in circles track by c.id" center="c.center" stroke="c.stroke" fill="c.fill" radius="c.radius" visible="c.visible" geodesic="c.geodesic" editable="c.editable" draggable="c.draggable" clickable="c.clickable" control="c.control"  events='c.events'></ui-gmap-circle>
+
+          </ui-gmap-google-map>
+
+
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
