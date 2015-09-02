@@ -1,19 +1,49 @@
 
-<div class="col-md-3  centered" ng-repeat='item in items'>
+<div class="col-md-12  centered" ng-repeat='item in items'>
 
-  <div class="row btn-group buttons">
-    <label class="col-md-3 btn btn-success " ng-model="radioModel2" btn-radio="'1'"  ng-click="test.setApi(item.name,1)">1</label>
-    <label class="col-md-3 btn btn-info" ng-model="radioModel2" btn-radio="'2'" ng-click="test.setApi(item.name,2)">2</label>
-    <label class="col-md-3 btn btn-warning" ng-model="radioModel2" btn-radio="'3'" ng-click="test.setApi(item.name,3)">3</label>
-    <label class="col-md-3 btn btn-danger" ng-model="radioModel2" btn-radio="'4'" ng-click="test.setApi(item.name,4)">4</label>
-  </div>
 
-  <h3 class="centered" ng-show=" radioModel2 != null  ">Position:  {{radioModel2}}</h3>
-  <h3 class="centered" ng-show=" radioModel2 == null   ">Position:  {{test.trol[0].val}}</h3>
+  <ul class="list-group centered_div " ng-repeat='api in item.venues'>
+    <li class="list-group-item centered_div item_lis">
+            <div class="row_sh">
+            <div class="col-xs-1 numb">
+              <p>{{$index+1}}</p>
+            </div>
 
-  <ul class="list-group centered_div" ng-repeat='api in item.venues'>
-    <li class="list-group-item centered_div"><div class="List_tit"><b>{{api.name}}</b></div><div class="List_con">Rating: {{api.rating}}</div><div class="List_con">Distance:{{api.distance}} km</div></li>
+             <div class="col-xs-7 info_list">
+             <div class="List_tit"><b>{{api.name}}</b></div>
+             <div  class="List_con" >
+               <p class= "openC" ng-if="api.other.openNow">OpenNow</p>
+               <p class= "closeC" ng-if="!api.other.openNow && api.other.openNow != undefined">Closed</p>
+               <div ng-if='api.price == undefined'>{{(api.distance/1000).toFixed(1)}} km away </div>
+               <div ng-if='api.price == 1'>{{(api.distance/1000).toFixed(1)}} km away - <i class="fa fa-eur"></i></div>
+               <div ng-if='api.price == 2'>{{(api.distance/1000).toFixed(1)}} km away - <i class="fa fa-eur"></i><i class="fa fa-eur"></i></i></div>
+               <div ng-if='api.price == 3'>{{(api.distance/1000).toFixed(1)}} km away - <i class="fa fa-eur"></i><i class="fa fa-eur"></i><i class="fa fa-eur"></i></i></div>
+               <div ng-if='api.price == 4'>{{(api.distance/1000).toFixed(1)}} km away - <i class="fa fa-eur"></i><i class="fa fa-eur"></i><i class="fa fa-eur"></i><i class="fa fa-eur"></i></i></div>
 
+              </div>
+
+             <div ng-repeat="pow in api.other.poweredBy" class="List_tit" >
+               <ul class="inli">
+                 <li ng-if='pow == "Foursquare"'><i class="fa fa-foursquare"></i></li>
+                 <li ng-if='pow == "Google"'><i class="fa fa-google"></i></li>
+                 <li ng-if='pow == "Yelp"'><i class="fa fa-yelp"></i></li>
+             </ul>
+              </div>
+
+
+
+            </div>
+            <div class="col-xs-3 ">
+
+              <div class="rating">{{api.rating}}</div>
+              <div class="rating_map" ><span title="Get directions!!"><a href="https://www.google.com/maps/dir/Current+Location/{{api.location.lat}},{{api.location.lon}}" target="_blank"><i class="fa fa-map-o"></i></a></span></div>
+
+            </div>
+
+          </div>
+
+    </li>
   </ul>
+
 
 </div>

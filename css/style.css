@@ -1,7 +1,9 @@
+
+
 body{
     margin: 0;
     padding: 0;
-    background-color: #f2f2f2;
+    background-color: #d9d9d9;
     height:100%;
 
 }
@@ -31,15 +33,20 @@ width: 100%;
 
 .title{
   color: #e5e5e5;
-    font: 26px "Comic Sans MS", cursive, sans-serif;
+    font: 24px "Comic Sans MS", cursive, sans-serif;
 }
 
 .help{
     font: 18px "Comic Sans MS", cursive, sans-serif;
     margin-top: 10px;
 }
+.title_icon{
+    font: 36px "Comic Sans MS", cursive, sans-serif;
+    margin: 10px;
+    color:#00a4e3;
+}
 .help_sm{
-    font: 17px "Comic Sans MS", cursive, sans-serif;
+    font: 18px "Comic Sans MS", cursive, sans-serif;
 }
 .help_sub{
     font: 14px "Comic Sans MS", cursive, sans-serif;
@@ -57,7 +64,7 @@ width: 100%;
 }
 
 .List_tit{
-    font: 13px "Comic Sans MS", cursive, sans-serif;
+    font: 16px "Comic Sans MS", cursive, sans-serif;
     padding: 0;
     margin: 0;
 
@@ -95,9 +102,13 @@ width: 100%;
   padding: 10px;
 }
 
+.item_lis{
+  background-color: white;
+  border:  2px solid #d9d9d9;
 
+}
 .menu{
-  background-color: #f2f2f2;
+  background-color: #b2deff;
   border-right:  1px solid #0092ff;
   margin-top: 6px;
   padding-right: 0px;
@@ -106,17 +117,32 @@ width: 100%;
 
 
 }
+.row_ed_dark{
+  border-bottom:  1px solid #0092ff;
+  padding: 10px;
+  margin: 0;
+  z-index: 314159;
+  background-color: #d9d9d9;
+
+
+}
 .row_ed{
-  border-bottom:  1px solid #c1c1c1;
+  border-bottom:  1px solid #0092ff;
+  padding: 10px;
+  margin: 0;
+  z-index: 314159;
+}
+.row_ed2{
   padding: 10px;
   margin: 0;
   z-index: 314159;
 
 
 }
+
 .row_ed_large{
   border-bottom:  1px solid #c1c1c1;
-  padding: 50px;
+  padding: 20px;
   margin: 0;
   z-index: 314159;
 
@@ -124,7 +150,7 @@ width: 100%;
 
 .map{
   background-color: white;
-  max-width: 100vh;
+
 
 }
 
@@ -155,7 +181,7 @@ width: 100%;
 
   }
 .new .angular-google-map-container {
-  height:250px;
+  height:400px;
   width: 100%;
 
 
@@ -185,6 +211,11 @@ width: 100%;
   .map_button {
     text-align:center;
     margin-top:5px;
+
+  }
+
+  #over_map{
+    z-index: 500;
 
   }
 
@@ -220,13 +251,19 @@ width: 100%;
     font: 17px "Comic Sans MS", cursive, sans-serif;
   }
   .white_p {
-    font: 17px "Comic Sans MS", cursive, sans-serif;
+    font: 22px "Comic Sans MS", cursive, sans-serif;
     color: white;
     padding: 10px;
   }
+
+  .startButton{
+    padding: 10px;
+    margin:10px;
+
+  }
   .white_p_big {
-    font: 32px "Comic Sans MS", cursive, sans-serif;
-    color:#5bc0de;
+    font: 55px "Comic Sans MS", cursive, sans-serif;
+    color:#00a4e3;
     padding: 10px;
   }
 
@@ -238,13 +275,111 @@ width: 100%;
     position: fixed;
     left:0;
     background-color: black;
-    opacity: 0.9;
     margin: 0 auto;
-
+    background-image: url("../images/Chalkboard.png");
+    background-color: black;
   }
 
   .wrapper{
     position: relative;
 
 padding: 100px;
+}
+  .numb{
+    font: 20px "Comic Sans MS", cursive, sans-serif;
+    color:#0092ff;
+    margin-right: 20px;
+
+  }
+  .openC{
+    font: 12px "Comic Sans MS", cursive, sans-serif;
+    color:#66b266;
+    margin-top: auto;
+    margin-bottom: auto;
+
+  }
+  .closeC{
+    font: 12px "Comic Sans MS", cursive, sans-serif;
+    color:red;
+    margin-top: auto;
+    margin-bottom: auto;
+
+  }
+
+  .info_list{
+    border-left: 1px solid #1da1f3;
+
+
+  }
+
+  .inli{
+     float: left;
+     list-style-type: none;
+     padding:2px;
+  }
+
+  .fa-eur{
+    color:#66b266;
+
+  }
+  .fa-foursquare{
+    color:#ffa7b6;
+
+  }
+
+  .fa-yelp{
+    color:red;
+
+  }
+  .fa-google{
+    color:#1780c2;
+
+  }
+  .fa-foursquare:hover{
+  transform: scale(1.2);
+
+  }.fa-yelp:hover{
+  transform: scale(1.2);
+
+  }.fa-google:hover{
+  transform: scale(1.2);
+
+  }
+
+
+
+  .fa-cirlce{
+    color:green;
+  }
+  .rating{
+    color:#4bb74c;
+    font: 23px "Comic Sans MS", cursive, sans-serif;
+    text-align:center;
+    right: 0;
+    position: absolute;
+  top: 50%;
+  -moz-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  }
+  .rating_map{
+    color:#66b266;
+    font: 17px "Comic Sans MS", cursive, sans-serif;
+    text-align:center;
+    left:0;
+    position: absolute;
+  top: 50%;
+  -moz-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  }
+
+  .row_sh {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display:         flex;
+
+
   }

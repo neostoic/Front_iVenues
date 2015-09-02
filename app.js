@@ -1,9 +1,10 @@
 
 
 (function() {
-  var app = angular.module('iVenues', ['ui.bootstrap','uiGmapgoogle-maps']);
+  var app = angular.module('iVenues', ['ui.bootstrap','uiGmapgoogle-maps','google.places']);
 
-
+//add markers on map
+//start screen
 
   app.config(function(uiGmapGoogleMapApiProvider) {
       uiGmapGoogleMapApiProvider.configure({
@@ -16,14 +17,15 @@
 
 
   //services
-  app.service('searchService', function () {
+  app.service('searchService',['$http', function ($http) {
 
 
 
-    this.query="";
-    this.location="55.952901,-3.191599";
-    this.radius=1000;
+    this.query="food";
+    this.location="40.711434, -74.007836";
+    this.radius=1200;
     this.funci = [];
+    this.markersShared = [];
     this.api = [
       {name:"ivenues", val: 0},
       {name:"foursquare", val: 0},
@@ -32,6 +34,7 @@
     ];
     this.test = true;
     this.load =false;
+    this.showMap = false;
 
     this.resetAPIonSearch =function (){
       this.api = [
@@ -50,9 +53,14 @@
     };
     this.setLocation = function(data) {
       this.location = data;
+      this.showMap = true;
+      console.log("from set"+this.location);
+
     };
+
     this.setRadius = function(data) {
       this.radius = data;
+
     };
     this.callback = function(data) {
 
@@ -67,6 +75,7 @@
     };
     this.func = function(name,data) {
       this.funci.push({name : name , fun : data});
+
       console.log(this.funci);
     };
 
@@ -82,6 +91,7 @@
 
     }
     this.test = !this.sumRank();
+
     console.log("test" +this.test);
       console.log(this.api);
     };
@@ -103,6 +113,7 @@
 
     this.nextTask = function(){
 
+
       if(this.taskNum<4)
       {
       this.api = [
@@ -119,7 +130,7 @@
         {
           task:1,
           name:"In the first task you have to search Eating and Dinning venues. Possible search terms are food, pizza, restaurant, etc.",
-          search:"Search for food, burger, restaurant, dinner ...",
+          search:"I want recommendations for ...",
           sub:"Next task"
          },
         {
@@ -143,13 +154,23 @@
       ];
 
       this.tasks= taskArray[this.taskNum];
-      this.taskNum++;
       console.log("re"+this.tasks.name);
     }
 
 
 
+
+      this.taskNum++;
+
+
     }
+
+
+
+
+
+
+
 
     this.changeLoad =function(data){
       this.load = data;
@@ -161,7 +182,7 @@
 
     this.nextTask();
 
-    });
+  }]);
 
 
 
@@ -203,10 +224,12 @@
 
 
 
-
       this.setQuery = function(input){
         $scope.data.setQuery(input);
         console.log(input);
+
+        this.listSh=true;
+
 
         $scope.getData();
 
@@ -220,6 +243,7 @@
       this.setRadius = function(input){
         $scope.data.setRadius(input);
         $scope.data.callback("update_map");
+        $scope.data.callback("update_map2");
         $scope.getData();
       }
 
@@ -233,7 +257,7 @@
         $http({
                 url: "http://venues.herokuapp.com/api/search",
                 method: "GET",
-                params: {query : $scope.data.query , location : $scope.data.location, radius:$scope.data.radius +500}
+                params: {query : $scope.data.query , location : $scope.data.location, radius:$scope.data.radius +400}
               })
               .success(function(data){
 
@@ -241,59 +265,47 @@
                 var foursquare =[];
                 var yelp =[];
                 var ivenues =[];
-
+                var markers = [];
+                var num = 0;
 
                 var coordinates = $scope.data.location.split(",");
                 var i_google=0;
 
-                for(i=0;i<5;i++)
+                for(i=0;i<data.iVenues.length;i++)
                  {
                    //ivenues
                    if(typeof data.iVenues[i] != "undefined")
                   {
                    ivenues.push({name :data.iVenues[i].name, rating :data.iVenues[i].rating , distance: distance(data.iVenues[i].location.lat,data.iVenues[i].location.lon,coordinates[0],coordinates[1])});
+
+                   num = i+1;
+                   markers.push(
+                             {
+                                 idKey: i+1,
+                                 coords: {
+                                     latitude: data.iVenues[i].location.lat,
+                                     longitude:data.iVenues[i].location.lon
+                                 },
+                                 options: {
+                                           icon: "images/number_"+num+".png"
+                                         }
+
+                             });
+
                  }
 
-                   //google avoid null rating
-                   for(k=i_google;k<data.rest.google.length;k++)
-                   {
-                     if (typeof data.rest.google[i_google].rating != "undefined")
-                       {
-                         google.push({name :data.rest.google[i_google].name, rating :(data.rest.google[i_google].rating*2).toFixed(1) , distance: distance(data.rest.google[i_google].geometry.location.lat,data.rest.google[i_google].geometry.location.lng,coordinates[0],coordinates[1])});
-
-                          i_google++;
-                         break;
-                       }
-                     else {
-                       {
-                         i_google++;
-
-                       }
-                     }
-                   }
-
-                   //foursquare
-                   if(typeof data.rest.foursquare[i] != "undefined")
-                   {
-                   foursquare.push({name :data.rest.foursquare[i].venue.name, rating :data.rest.foursquare[i].venue.rating , distance: distance(data.rest.foursquare[i].venue.location.lat,data.rest.foursquare[i].venue.location.lng,coordinates[0],coordinates[1])});
-                   }
-
-                   //yelp
-                   if(typeof data.rest.yelp != "undefined")
-                   {
-                   yelp.push({name :data.rest.yelp[i].name, rating :(data.rest.yelp[i].rating*2).toFixed(1) , distance: distance(data.rest.yelp[i].location.coordinate.latitude,data.rest.yelp[i].location.coordinate.longitude,coordinates[0],coordinates[1])});
-                    }
 
                  }
 
 
 
                  $scope.items = [];
-                 $scope.items.push({name:"ivenues",venues:ivenues},{name:"foursquare",venues:foursquare},{name:"google",venues:google},{name:"yelp",venues:yelp});
+                 $scope.items.push({name:"ivenues",venues:data.iVenues});
                  //suffling
                  shuffle($scope.items);
 
                  $scope.data.changeLoad(false);
+                 $scope.data.markersShared=markers;
 
 
                 console.log(data);
@@ -330,8 +342,21 @@
       $scope.data.func("update_results" ,$scope.getData);
       $scope.getData();
 
+      this.listSh=false;
+
+
+
       //autoscroll
       this.gotoTask = function() {
+
+        $http.post("insert.php",{task: $scope.data.taskNum ,query: $scope.data.query ,radius: $scope.data.radius,location: $scope.data.location,ivenues: $scope.data.api[0].val,foursquare: $scope.data.api[1].val,google: $scope.data.api[2].val,yelp: $scope.data.api[3].val})
+              .success(function(data, status, headers, config){
+                      console.log("inserted Successfully");
+                  });
+
+
+
+        this.listSh=false;
      // set the location.hash to the id of
      // the element you wish to scroll to.
      $location.hash('tasks_id');
@@ -346,6 +371,29 @@
    };
 
 
+   this.setLocationStart = function(input){
+
+     $http({
+             url: "http://api.geonames.org/searchJSON",
+             method: "GET",
+             params: {q : input , maxRows : 1, fuzzy:0.6 , username:"geototti21"}
+           })
+           .success(function(data){
+
+             $scope.data.setLocation(data.geonames[0].lat+","+data.geonames[0].lng);
+             $scope.getData();
+           })
+           .error(function(data){
+
+             $scope.data.setLocation("40.711434, -74.007836");
+             $scope.getData();
+           });
+
+
+
+
+
+   }
 
 
 
@@ -354,14 +402,11 @@
 
 
 
-  app.controller("mapController",['$scope','searchService', function($scope, searchService) {
+  app.controller("mapController",['$scope','searchService','$http', function($scope, searchService ,$http) {
 
   // Define variables for our Map object
 
-  var    areaZoom     = 13;
-
-
-
+  var    areaZoom     = 15;
 
 
       $scope.data = searchService;
@@ -370,6 +415,10 @@
         //var styles = [{stylers:[{hue:'#890000'},{visibility:'simplified'},{gamma:0.5},{weight:0.5}]},{elementType:'labels',stylers:[{visibility:'off'}]},{featureType:'water',stylers:[{color:'#890000'}]}];
 
         var coordinates = $scope.data.location.split(",");
+
+         console.log("radius:" +  $scope.data.radius);
+
+
 
       $scope.circles = [
                 {
@@ -380,13 +429,148 @@
                     },
                     radius: $scope.data.radius,
                     stroke: {
-                        color: '#5bc0de',
+                        color: '#0092ff',
+                        weight: 2,
+                        opacity: 1
+                    },
+                    fill: {
+                        color: '#0092ff',
+                        opacity: 0.1
+                    },
+                    geodesic: true, // optional: defaults to false
+                    draggable: true, // optional: defaults to false
+                    clickable: true, // optional: defaults to true
+
+                    visible: true, // optional: defaults to true
+                    events:{
+                          dragend: function(){
+
+                            test = $scope.circles[0].center.latitude + "," + $scope.circles[0].center.longitude;
+                            $scope.data.setLocation($scope.circles[0].center.latitude + "," + $scope.circles[0].center.longitude);
+                            $scope.data.callback("update_results");
+
+                          console.log("circle dblclick" + test);
+                        }
+                      }
+                }
+            ];
+
+            var test=15;
+      $scope.markers = $scope.data.markersShared;
+
+
+
+
+};
+
+
+
+
+$scope.onClick2 = function() {
+        window.alert("clicked");
+        console.log("klikaresssssssss");
+    };
+
+
+this.locate = function (){
+console.log("mpikke" + navigator.geolocation);
+
+if (navigator.geolocation) {
+  console.log("mpike2");
+   navigator.geolocation.getCurrentPosition(function(position){
+     console.log("mpike3");
+     $scope.$apply(function(){
+       var lat = position.coords.latitude;
+       var long = position.coords.longitude;
+
+       $scope.data.setLocation(lat+","+long);
+       console.log(lat+ ","+long);
+       $scope.map = { center: { latitude: lat, longitude: long} };
+
+       $scope.updateMap();
+       $scope.data.callback("update_results");
+
+
+     });
+   });
+ }
+
+};
+
+this.setMapLoc = function(input){
+
+  $http({
+          url: "http://api.geonames.org/searchJSON",
+          method: "GET",
+          params: {q : input , maxRows : 1, fuzzy:0.6 , username:"geototti21"}
+        })
+        .success(function(data){
+
+          $scope.data.setLocation(data.geonames[0].lat+","+data.geonames[0].lng);
+          $scope.map = {zoom:15,  center: { latitude: data.geonames[0].lat, longitude: data.geonames[0].lng} };
+
+          $scope.updateMap();
+
+          $scope.data.callback("update_results");
+
+          console.log(data);
+        });
+
+
+
+
+
+};
+
+
+
+var coordinates = $scope.data.location.split(",");
+
+$scope.map = { center: { latitude: coordinates[0], longitude: coordinates[1]}, zoom: areaZoom  };
+//var stylesArray =[{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#000000"},{"lightness":13}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#144b53"},{"lightness":14},{"weight":1.4}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#08304b"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#0c4152"},{"lightness":5}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#0b434f"},{"lightness":25}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#0b3d51"},{"lightness":16}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"}]},{"featureType":"transit","elementType":"all","stylers":[{"color":"#146474"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#021019"}]}];
+var stylesArray =[{"featureType":"landscape","stylers":[{"hue":"#F1FF00"},{"saturation":-27.4},{"lightness":9.4},{"gamma":1}]},{"featureType":"road.highway","stylers":[{"hue":"#0099FF"},{"saturation":-20},{"lightness":36.4},{"gamma":1}]},{"featureType":"road.arterial","stylers":[{"hue":"#00FF4F"},{"saturation":0},{"lightness":0},{"gamma":1}]},{"featureType":"road.local","stylers":[{"hue":"#FFB300"},{"saturation":-38},{"lightness":11.2},{"gamma":1}]},{"featureType":"water","stylers":[{"hue":"#00B6FF"},{"saturation":4.2},{"lightness":-63.4},{"gamma":1}]},{"featureType":"poi","stylers":[{"hue":"#9FFF00"},{"saturation":0},{"lightness":0},{"gamma":1}]}];
+$scope.options = {  styles: stylesArray , maxZoom:17 ,minZoom:12};
+$scope.updateMap();
+$scope.data.func("update_map" ,$scope.updateMap);
+
+
+  }]);
+
+
+  app.controller("mapControllerS",['$scope','searchService','$http', function($scope, searchService ,$http) {
+
+  // Define variables for our Map object
+
+  var    areaZoom     = 13;
+
+
+      $scope.data = searchService;
+
+      $scope.updateMap = function() {
+        //var styles = [{stylers:[{hue:'#890000'},{visibility:'simplified'},{gamma:0.5},{weight:0.5}]},{elementType:'labels',stylers:[{visibility:'off'}]},{featureType:'water',stylers:[{color:'#890000'}]}];
+
+        var coordinates = $scope.data.location.split(",");
+
+         console.log("radius:" +  $scope.data.radius);
+
+
+
+      $scope.circles = [
+                {
+                    id: 1,
+                    center: {
+                        latitude: coordinates[0],
+                        longitude:coordinates[1]
+                    },
+                    radius: $scope.data.radius,
+                    stroke: {
+                        color: '#fb445a',
                         weight: 3,
                         opacity: 1
                     },
                     fill: {
                         color: '#eef8fb',
-                        opacity: 0.5
+                        opacity: 0.1
                     },
                     geodesic: true, // optional: defaults to false
                     draggable: true, // optional: defaults to false
@@ -411,10 +595,9 @@
 
 };
 
-$scope.data.func("update_map" ,$scope.updateMap);
 
 this.locate = function (){
-
+console.log("mpikke");
 
 if (navigator.geolocation) {
    navigator.geolocation.getCurrentPosition(function(position){
@@ -427,11 +610,37 @@ if (navigator.geolocation) {
        $scope.map = { center: { latitude: lat, longitude: long} };
 
        $scope.updateMap();
+       $scope.data.callback("update_results");
 
 
      });
    });
  }
+
+}
+
+this.setMapLoc = function(input){
+
+  $http({
+          url: "http://api.geonames.org/searchJSON",
+          method: "GET",
+          params: {q : input , maxRows : 1, fuzzy:0.6 , username:"geototti21"}
+        })
+        .success(function(data){
+
+          $scope.data.setLocation(data.geonames[0].lat+","+data.geonames[0].lng);
+          $scope.map = {zoom:13,  center: { latitude: data.geonames[0].lat, longitude: data.geonames[0].lng} };
+
+          $scope.updateMap();
+
+          $scope.data.callback("update_results");
+
+          console.log(data);
+        });
+
+
+
+
 
 }
 
@@ -441,8 +650,9 @@ var coordinates = $scope.data.location.split(",");
 
 $scope.map = { center: { latitude: coordinates[0], longitude: coordinates[1]}, zoom: areaZoom  };
 var stylesArray =[{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#000000"},{"lightness":13}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#144b53"},{"lightness":14},{"weight":1.4}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#08304b"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#0c4152"},{"lightness":5}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#0b434f"},{"lightness":25}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#0b3d51"},{"lightness":16}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"}]},{"featureType":"transit","elementType":"all","stylers":[{"color":"#146474"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#021019"}]}];
-$scope.options = {  styles: stylesArray };
+$scope.options = {  styles: stylesArray , maxZoom:17 ,minZoom:12};
 $scope.updateMap();
+$scope.data.func("update_map2" ,$scope.updateMap);
 
 
   }]);
