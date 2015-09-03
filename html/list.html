@@ -19,6 +19,7 @@
                <div ng-if='api.price == 2'>{{(api.distance/1000).toFixed(1)}} km away - <i class="fa fa-eur"></i><i class="fa fa-eur"></i></i></div>
                <div ng-if='api.price == 3'>{{(api.distance/1000).toFixed(1)}} km away - <i class="fa fa-eur"></i><i class="fa fa-eur"></i><i class="fa fa-eur"></i></i></div>
                <div ng-if='api.price == 4'>{{(api.distance/1000).toFixed(1)}} km away - <i class="fa fa-eur"></i><i class="fa fa-eur"></i><i class="fa fa-eur"></i><i class="fa fa-eur"></i></i></div>
+               <a class="getD" href="https://www.google.com/maps/dir/Current+Location/{{api.location.lat}},{{api.location.lon}}" target="_blank">(Get directions)</a>
 
               </div>
 
@@ -36,7 +37,6 @@
             <div class="col-xs-3 ">
 
               <div class="rating">{{api.rating}}</div>
-              <div class="rating_map" ><span title="Get directions!!"><a href="https://www.google.com/maps/dir/Current+Location/{{api.location.lat}},{{api.location.lon}}" target="_blank"><i class="fa fa-map-o"></i></a></span></div>
 
             </div>
 

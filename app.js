@@ -3,8 +3,7 @@
 (function() {
   var app = angular.module('iVenues', ['ui.bootstrap','uiGmapgoogle-maps','google.places']);
 
-//add markers on map
-//start screen
+
 
   app.config(function(uiGmapGoogleMapApiProvider) {
       uiGmapGoogleMapApiProvider.configure({
@@ -165,20 +164,10 @@
 
     }
 
-
-
-
-
-
-
-
     this.changeLoad =function(data){
       this.load = data;
 
     }
-
-
-
 
     this.nextTask();
 
@@ -191,9 +180,7 @@
   //controllers
   app.controller('MainController', ['$scope','$http','searchService','$location','$anchorScroll',function($scope,$http,searchService,$location,$anchorScroll ){
 
-/*
-    $scope.names = ["john", "bill", "charlie", "robert", "alban", "oscar", "marie", "celine", "brad", "drew", "rebecca", "michel", "francis", "jean", "paul", "pierre", "nicolas", "alfred", "gerard", "louis", "albert", "edouard", "benoit", "guillaume", "nicolas", "joseph"];
-*/
+
   var $element = $('#tasksB').bind('webkitAnimationEnd ', function(){
     this.style.webkitAnimationName = '';
   });
@@ -202,7 +189,6 @@
 
   $('#submitB').click(function(){
    $element.css('webkitAnimationName', 'shake');
-   // you'll probably want to preventDefault here.
  });
 
       $scope.data =searchService;
@@ -216,8 +202,16 @@
 
       }
       this.changeEnd = function(){
-        if($scope.data.taskNum === 4)
-        {this.endS = true;}
+        if(this.endS)
+        {
+          this.endS = false;
+        }
+        else
+        {
+          this.endS = true;
+          $( '#help_button' ).removeClass( "pulsate" );
+
+        }
 
 
       }
@@ -357,8 +351,7 @@
 
 
         this.listSh=false;
-     // set the location.hash to the id of
-     // the element you wish to scroll to.
+
      $location.hash('tasks_id');
      console.log("im in");
      // call $anchorScroll()
@@ -379,14 +372,25 @@
              params: {q : input , maxRows : 1, fuzzy:0.6 , username:"geototti21"}
            })
            .success(function(data){
+             console.log(data);
+             if( data.totalResultsCount ==0 )
+             {
+               $scope.data.setLocation("40.711434, -74.007836");
+               $scope.getData();
 
-             $scope.data.setLocation(data.geonames[0].lat+","+data.geonames[0].lng);
-             $scope.getData();
+             }
+             else{
+               $scope.data.setLocation(data.geonames[0].lat+","+data.geonames[0].lng);
+               $scope.getData();
+
+             }
+
            })
            .error(function(data){
 
              $scope.data.setLocation("40.711434, -74.007836");
              $scope.getData();
+
            });
 
 
@@ -412,7 +416,6 @@
       $scope.data = searchService;
 
       $scope.updateMap = function() {
-        //var styles = [{stylers:[{hue:'#890000'},{visibility:'simplified'},{gamma:0.5},{weight:0.5}]},{elementType:'labels',stylers:[{visibility:'off'}]},{featureType:'water',stylers:[{color:'#890000'}]}];
 
         var coordinates = $scope.data.location.split(",");
 
@@ -695,25 +698,6 @@ app.directive("lists", ['searchService',function(searchService){
     templateUrl: "html/list.html"
   };
 }]);
-
-/*
-app.directive('autoComplete', function($timeout) {
-    return function(scope, iElement, iAttrs) {
-            iElement.autocomplete({
-                source: scope[iAttrs.uiItems],
-                select: function() {
-                    $timeout(function() {
-                      iElement.trigger('input');
-                    }, 0);
-                }
-            });
-    };
-});
-
-*/
-
-
-
 
 
 })();

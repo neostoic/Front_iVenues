@@ -8,7 +8,9 @@ body{
 
 }
 
-
+.a{
+    text-decoration: none; /* no underline */
+}
 .container-full {
 
   margin: 0 auto;
@@ -33,7 +35,9 @@ width: 100%;
 
 .title{
   color: #e5e5e5;
-    font: 24px "Comic Sans MS", cursive, sans-serif;
+    font: 32px "Comic Sans MS", cursive, sans-serif;
+    float:left;
+    margin: 3px;
 }
 
 .help{
@@ -252,19 +256,41 @@ width: 100%;
   }
   .white_p {
     font: 22px "Comic Sans MS", cursive, sans-serif;
+    font-size: 1.5vmax;
     color: white;
+    padding: 5px;
+  }
+  .white_p_s {
+    font: 18px "Comic Sans MS", cursive, sans-serif;
+    color: white;
+    padding: 5px;
+  }
+
+
+  .white_p_blue {
+    font: 30px "Comic Sans MS", cursive, sans-serif;
+    color: #00a4e3;
     padding: 10px;
+  }
+
+  .white_p_bottom {
+    font: 16px "Comic Sans MS", cursive, sans-serif;
+    font-size: 1vmax;
+    color: white;
+    padding-top:10px;
+    bottom:0px;
   }
 
   .startButton{
     padding: 10px;
-    margin:10px;
+    margin:40px;
 
   }
   .white_p_big {
     font: 55px "Comic Sans MS", cursive, sans-serif;
+    font-size: 5vmax;
     color:#00a4e3;
-    padding: 10px;
+    padding: 7px;
   }
 
 
@@ -276,14 +302,28 @@ width: 100%;
     left:0;
     background-color: black;
     margin: 0 auto;
-    background-image: url("../images/Chalkboard.png");
+    background-image: url("../images/Chalkboard.jpg");
+    background-size:100% 100%;
+
+    background-color: black;
+
+  }
+  .help_screen{
+    width: 100vw;
+    height: 100vh;
+    z-index: 4400;
+    position: fixed;
+    left:0;
+    background-color: black;
+    margin: 0 auto;
+    opacity: 0.9;
     background-color: black;
   }
 
   .wrapper{
     position: relative;
 
-padding: 100px;
+padding: 50px;
 }
   .numb{
     font: 20px "Comic Sans MS", cursive, sans-serif;
@@ -304,6 +344,11 @@ padding: 100px;
     margin-top: auto;
     margin-bottom: auto;
 
+  }
+  .getD{
+    font: 10px "Comic Sans MS", cursive, sans-serif;
+    margin-top: auto;
+    margin-bottom: auto;
   }
 
   .info_list{
@@ -352,14 +397,28 @@ padding: 100px;
     color:green;
   }
   .rating{
-    color:#4bb74c;
-    font: 23px "Comic Sans MS", cursive, sans-serif;
-    text-align:center;
-    right: 0;
-    position: absolute;
-  top: 50%;
-  -moz-transform: translateY(-50%);
-  transform: translateY(-50%);
+      color:#4bb74c;
+      font: 20px "Comic Sans MS", cursive, sans-serif;
+      text-align:center;
+      position: absolute;
+      top: 50%;
+      -moz-transform: translateY(-50%);
+      transform: translateY(-50%);
+
+      display: block;
+      height: 55px;
+      width: 55px;
+      line-height: 55px;
+
+      -moz-border-radius: 30px; /* or 50% */
+      border-radius: 30px; /* or 50% */
+
+      background-color: #4bb74c;
+      color: white;
+      text-align: center;
+      font-size: 2em;
+
+
 
   }
   .rating_map{
@@ -382,4 +441,49 @@ padding: 100px;
     display:         flex;
 
 
+  }
+
+  .search_dark{
+
+    background-color:#e0f1ff;
+   color: black;
+
+  }
+  .title_bt{
+    float: right;
+    margin: 15px;
+    margin-right: 70px;
+  }
+
+  .pulsate {
+  animation-name: pulsate;
+  -webkit-animation-name: pulsate;animation-duration: 1.5s;
+  -webkit-animation-duration: 1.5s;animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+  }@keyframes pulsate {
+  0% {
+  transform: scale(0.9);
+  opacity: 0.7;
+  }
+  50% {
+  transform: scale(1);
+  opacity: 1;
+  }
+  100% {
+  transform: scale(0.9);
+  opacity: 0.7;
+  }
+  }@-webkit-keyframes pulsate {
+  0% {
+  -webkit-transform: scale(0.95);
+  opacity: 0.7;
+  }
+  50% {
+  -webkit-transform: scale(1);
+  opacity: 1;
+  }
+  100% {
+  -webkit-transform: scale(0.95);
+  opacity: 0.7;
+  }
   }
